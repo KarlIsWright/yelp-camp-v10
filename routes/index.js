@@ -6,6 +6,15 @@ Comment 		=	require("../models/comment"),
 router			=	express.Router(),
 User 			=	require("../models/user");
 
+/*'index.js' is a special name for the Express Module, 
+wherein we need only specify the dir and index.js is automatically assumed
+to be required.
+Basically INDEX is a special name, where we don't need to specify it.
+*/
+
+middleware		=	require("../middleware");
+
+
 //-------------------------------------------------------------------------------------------------
 // 								ROUTES
 //-------------------------------------------------------------------------------------------------
@@ -41,11 +50,12 @@ router.post("/register", function(req, res){
 		if(err){
 			console.log("---------------------------------------------------------------------------");
 			console.log(err);
-			console.log(req.body.username);
-			console.log(req.body.password);
-			return res.render("register");
+			console.log(req.body.username);			
+			// The method below works better than req.flash and is less buggy.			
+			return res.render("register", {"error": err.message});			
 		} 
 		passport.authenticate("local")(req, res, function(){
+			req.flash("success", "Welcome " + req.body.username);
 			res.redirect("/campgrounds");			
 		});
 	});
@@ -65,28 +75,19 @@ router.post('/login', passport.authenticate('local',
 	{
 	successRedirect: '/campgrounds',
 	failureRedirect: '/login' 
-	}), function(req, res){
-			console.log(req.user.username);	
-		});
+	}), 
+	function(req, res){
+		console.log(req.user.username);
+	});
 
 //-------------------------------------------------------------------------------------------------
 // LOGOUT ROUTE
 //-------------------------------------------------------------------------------------------------
-router.get("/logout", isLoggedIn, function(req, res){
+router.get("/logout", middleware.isLoggedIn, function(req, res){
 	req.logout();
+	req.flash("success", "Goodbye!")	
 	res.redirect("/campgrounds");
 });
 
-//-------------------------------------------------------------------------------------------------
-// MIDDLEWARE
-//-------------------------------------------------------------------------------------------------
-// 'next' is the function to be called after this middleware runs.
-function isLoggedIn(req, res, next){
-	if(req.isAuthenticated()){
-		// escape the function by executing next.
-		return next();
-	}
-	res.redirect("/login");
-};
 
 module.exports = router;

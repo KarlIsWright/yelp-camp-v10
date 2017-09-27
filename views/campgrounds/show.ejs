@@ -1,7 +1,8 @@
 <% include ../partials/header %>
 <div class="container">
     <div class="row">
-        <div class="col-md-3">
+        <p><a class="btn btn-primary" href="/campgrounds"><< Go Back </a></p>
+        <div class="col-md-3">            
             <p class="lead">YelpCamp</p>
             <div class="list-group">
                 <li class="list-group-item active">Info 1</li>
@@ -13,7 +14,7 @@
             <div class="thumbnail">
                 <img class="img-responsive" src="<%= campground.image %>">
                 <div class="caption-full">
-                    <h4 class="pull-right">$9.00/night</h4>
+                    <h4 class="pull-right">$<%=campground.price%>/night</h4>
                     <h4><a><%=campground.name%></a></h4>
                     <p>
                         <em>Submitted By <%= campground.author.username %></em>
@@ -26,12 +27,12 @@
                     logged in, it fails and you get an error. -->
                     
                     <% if (currentUser && campground.author.id.equals(currentUser._id)) { %> 
-                    <!-- currentUser was defined as req.user in app.js file #53. -->
+                        <!-- currentUser was defined as req.user in app.js file #53. -->
 
-                    <a class="btn btn-warning" href="/campgrounds/<%=campground._id%>/edit"><strong>Edit</strong></a>
-					<form class="delete_form" action="/campgrounds/<%=campground._id%>?_method=DELETE" method="POST">                
-                        <button class="btn btn-danger">DELETE</button>
-                    </form>	
+                        <a class="btn btn-warning" href="/campgrounds/<%=campground._id%>/edit"><strong>Edit</strong></a>
+    					<form class="delete_form" action="/campgrounds/<%=campground._id%>?_method=DELETE" method="POST">                
+                            <button class="btn btn-danger">DELETE</button>
+                        </form>	
 
                     <% } %>
 				</div>
@@ -62,5 +63,5 @@
         </div>
     </div>
 </div>
-<p><a class="btn btn-primary" href="/campgrounds"><< Go Back </a></p>	
+	
 <% include ../partials/footer %>

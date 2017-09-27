@@ -9,7 +9,8 @@ var express     = require("express"),
     Campground  = require("./models/campground"),
     Comment     = require("./models/comment"),
     User        = require("./models/user"),
-    seedDB      = require("./seeds");
+    seedDB      = require("./seeds"),
+    flash		= require("connect-flash");
 //-------------------------------------------------------------------------------------------------
 // DECLARE ROUTES FROM ROUTES FOLDER AS VARS TO IMPORT DOWN BELOW
 //-------------------------------------------------------------------------------------------------
@@ -20,13 +21,14 @@ var commentRoutes    = require("./routes/comments"),
 //-------------------------------------------------------------------------------------------------
 // CONNECT TO MONGO DB
 //-------------------------------------------------------------------------------------------------
-mongoose.connect('mongodb://localhost/yelp_camp_v10', {
+mongoose.connect('mongodb://localhost/yelp_camp_final', {
 	useMongoClient: true
 });
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
+app.use(flash());
 
 //-------------------------------------------------------------------------------------------------
 // REPLACE OLD DB DATA WITH FRESH SEED DATA
@@ -51,6 +53,8 @@ passport.deserializeUser(User.deserializeUser());
 // the following will pass the variable {currentUser: req.user} to every ejs route called
 app.use(function(req, res, next){
 	res.locals.currentUser = req.user;
+	res.locals.error = req.flash("error");
+	res.locals.success = req.flash("success");
 	next();
 });
 

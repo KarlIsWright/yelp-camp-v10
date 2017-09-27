@@ -22,6 +22,7 @@ router.get("/", function(req,res){
 		// GET ALL CAMPGROUNDS FROM DB
 		Campground.find({}, function(err, allCampgrounds){
 			if(err){
+			req.flash("error", "Could not find any campgrounds!")
 			console.log(err);
 		} else {
 		// Note that, {currentUser: req.user} is also passed by the app.use function defined earlier.			
@@ -36,13 +37,14 @@ router.get("/", function(req,res){
 router.post("/", middleware.isLoggedIn, function(req,res){
 	// get data from form and add to campgrounds array
 	var name = req.body.name;
+	var price = req.body.price;
 	var image = req.body.image;
 	var desc = req.body.description;
 	var author = {
 		id: req.user._id,
 		username: req.user.username
 	}
-	var newCampground = {name:name, image:image, description:desc, author:author}
+	var newCampground = {name:name, price:price, image:image, description:desc, author:author}
 	console.log("---------------------------------------------------------------------------");
 	console.log("current user is, " + req.user.username);
 
